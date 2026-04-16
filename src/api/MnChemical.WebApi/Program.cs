@@ -58,6 +58,28 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+
+if (app.Environment.IsDevelopment())
+{
+    // Bypass auth in development — all requests treated as authenticated Admin
+    app.Use(async (context, next) =>
+    {
+        if (!context.User.Identity?.IsAuthenticated ?? true)
+        {
+            var claims = new[]
+            {
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, Guid.Empty.ToString()),
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, "dev"),
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "Admin"),
+                new System.Security.Claims.Claim("fullName", "Developer"),
+            };
+            context.User = new System.Security.Claims.ClaimsPrincipal(
+                new System.Security.Claims.ClaimsIdentity(claims, "DevBypass"));
+        }
+        await next();
+    });
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

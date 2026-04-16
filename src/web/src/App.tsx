@@ -26,12 +26,30 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
 
+const DEV_USER: AuthUser = { id: '', username: 'dev', fullName: 'Developer', email: null, role: 'Admin' };
+
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(getToken() ? getStoredUser() : null);
+  const [checking, setChecking] = useState(!user);
+
+  // Check if auth is bypassed (dev mode) by testing an endpoint without a token
+  useState(() => {
+    if (user) return;
+    fetch('/api/health').then(r => {
+      if (r.ok) {
+        // Try a protected endpoint without token
+        fetch('/api/customers').then(r2 => {
+          if (r2.ok) { setUser(DEV_USER); } // Auth bypassed
+          setChecking(false);
+        });
+      } else { setChecking(false); }
+    }).catch(() => setChecking(false));
+  });
 
   const handleLogin = () => setUser(getStoredUser());
   const handleLogout = () => { clearToken(); setUser(null); queryClient.clear(); };
 
+  if (checking) return null;
   if (!user) return <Login onLogin={handleLogin} />;
 
   return (
