@@ -17,6 +17,13 @@ const navSections = [
     ],
   },
   {
+    title: 'Warehouse',
+    items: [
+      { to: '/warehouse', label: 'Inventory' },
+      { to: '/warehouse/consumption', label: 'Material Usage' },
+    ],
+  },
+  {
     title: 'HR',
     items: [
       { to: '/employees', label: 'Employees' },

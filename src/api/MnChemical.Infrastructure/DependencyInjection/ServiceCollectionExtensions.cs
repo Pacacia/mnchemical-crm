@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<IShipmentService, ShipmentService>();
         services.AddScoped<ITransportService, TransportService>();
+        services.AddScoped<IWarehouseService, WarehouseService>();
 
         QuestPDF.Settings.License = LicenseType.Community;
 

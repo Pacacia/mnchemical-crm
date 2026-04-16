@@ -285,3 +285,69 @@ export interface CreateTransportRecord {
   vatRate: number;
   shipmentId: string;
 }
+
+// Warehouse types
+
+export interface PackagingMaterial {
+  id: string;
+  code: string;
+  name: string;
+  subType: string;
+  description: string | null;
+  unitOfMeasure: string;
+  lotCount: number;
+  totalBalance: number;
+}
+
+export interface MaterialLot {
+  id: string;
+  lotCode: string;
+  purchaseDate: string;
+  initialQuantity: number;
+  currentBalance: number;
+  materialId: string;
+  materialName: string;
+  materialCode: string;
+  unitOfMeasure: string;
+}
+
+export interface MaterialConsumption {
+  id: string;
+  quantity: number;
+  consumedDate: string;
+  shipmentId: string;
+  containerNumber: string;
+  orderInvoiceNumber: string | null;
+  materialLotId: string;
+  lotCode: string;
+  materialName: string;
+  materialCode: string;
+  unitOfMeasure: string;
+}
+
+export interface WarehouseInventory {
+  materialId: string;
+  materialCode: string;
+  materialName: string;
+  subType: string;
+  unitOfMeasure: string;
+  lots: {
+    lotId: string;
+    lotCode: string;
+    purchaseDate: string;
+    initialQuantity: number;
+    currentBalance: number;
+    totalConsumed: number;
+  }[];
+  totalBalance: number;
+}
+
+export interface ShipmentMaterialsReport {
+  shipmentId: string;
+  containerNumber: string;
+  batchNumber: string;
+  orderInvoiceNumber: string | null;
+  destination: string;
+  shipmentDate: string | null;
+  materials: MaterialConsumption[];
+}

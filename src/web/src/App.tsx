@@ -14,6 +14,8 @@ import MonthlyReport from './pages/MonthlyReport';
 import LeaveManagement from './pages/LeaveManagement';
 import ShipmentList from './pages/ShipmentList';
 import TransportList from './pages/TransportList';
+import WarehouseInventory from './pages/WarehouseInventory';
+import MaterialConsumption from './pages/MaterialConsumption';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -34,6 +36,8 @@ export default function App() {
             <Route path="/orders/:id/edit" element={<OrderForm />} />
             <Route path="/shipments" element={<ShipmentList />} />
             <Route path="/transport" element={<TransportList />} />
+            <Route path="/warehouse" element={<WarehouseInventory />} />
+            <Route path="/warehouse/consumption" element={<MaterialConsumption />} />
             <Route path="/employees" element={<EmployeeList />} />
             <Route path="/employees/new" element={<EmployeeForm />} />
             <Route path="/employees/:id/edit" element={<EmployeeForm />} />

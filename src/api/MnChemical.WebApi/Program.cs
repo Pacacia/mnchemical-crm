@@ -1,5 +1,6 @@
 using MnChemical.Infrastructure.DependencyInjection;
 using MnChemical.Infrastructure.Data;
+using MnChemical.Application.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,8 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
+    var warehouse = scope.ServiceProvider.GetRequiredService<IWarehouseService>();
+    await warehouse.SeedReferenceMaterialsAsync();
 }
 
 app.UseCors("AllowFrontend");
