@@ -1,33 +1,32 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import CustomerList from './pages/CustomerList';
+import CustomerForm from './pages/CustomerForm';
+import OrderList from './pages/OrderList';
+import OrderForm from './pages/OrderForm';
 
-function App() {
-  const [health, setHealth] = useState<{ status: string; timestamp: string } | null>(null)
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
+});
 
-  useEffect(() => {
-    fetch('/api/health')
-      .then(res => res.json())
-      .then(setHealth)
-      .catch(() => setHealth(null))
-  }, [])
-
+export default function App() {
   return (
-    <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
-      <h1>MN Chemical CRM</h1>
-      <p>Management system for MN Chemical Georgia LLC</p>
-
-      <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px', maxWidth: '400px' }}>
-        <h3>API Status</h3>
-        {health ? (
-          <p style={{ color: 'green' }}>
-            {health.status} — {new Date(health.timestamp).toLocaleString()}
-          </p>
-        ) : (
-          <p style={{ color: '#999' }}>Connecting to API...</p>
-        )}
-      </div>
-    </div>
-  )
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/customers" element={<CustomerList />} />
+            <Route path="/customers/new" element={<CustomerForm />} />
+            <Route path="/customers/:id/edit" element={<CustomerForm />} />
+            <Route path="/orders" element={<OrderList />} />
+            <Route path="/orders/new" element={<OrderForm />} />
+            <Route path="/orders/:id/edit" element={<OrderForm />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
 }
-
-export default App
