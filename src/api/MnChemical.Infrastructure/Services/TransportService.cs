@@ -46,8 +46,8 @@ public class TransportService(AppDbContext db) : ITransportService
             CostGel = dto.CostGel,
             ExchangeRate = dto.ExchangeRate,
             VatRate = dto.VatRate,
-            VatAmountUsd = dto.CostUsd * dto.VatRate / 100,
-            TotalWithVatUsd = dto.CostUsd + dto.CostUsd * dto.VatRate / 100,
+            VatAmountUsd = Math.Round(dto.CostUsd * dto.VatRate / 100, 2),
+            TotalWithVatUsd = Math.Round(dto.CostUsd + dto.CostUsd * dto.VatRate / 100, 2),
             ShipmentId = dto.ShipmentId,
         };
         db.TransportRecords.Add(record);

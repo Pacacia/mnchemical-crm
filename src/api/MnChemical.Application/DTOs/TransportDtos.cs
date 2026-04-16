@@ -18,14 +18,14 @@ public record TransportRecordDto(
     DateTime CreatedAt);
 
 public record CreateTransportRecordDto(
-    string CarrierInvoiceNumber,
+    [System.ComponentModel.DataAnnotations.Required] string CarrierInvoiceNumber,
     DateTime InvoiceDate,
-    string CarrierName,
-    string RouteLeg,
-    decimal CostUsd,
-    decimal CostGel,
-    decimal ExchangeRate,
-    decimal VatRate,
+    [System.ComponentModel.DataAnnotations.Required] string CarrierName,
+    [System.ComponentModel.DataAnnotations.Required] string RouteLeg,
+    [System.ComponentModel.DataAnnotations.Range(0.01, 10000000)] decimal CostUsd,
+    [System.ComponentModel.DataAnnotations.Range(0, 100000000)] decimal CostGel,
+    [System.ComponentModel.DataAnnotations.Range(0.0001, 1000)] decimal ExchangeRate,
+    [System.ComponentModel.DataAnnotations.Range(0, 100)] decimal VatRate,
     Guid ShipmentId);
 
 public record ShipmentDto(

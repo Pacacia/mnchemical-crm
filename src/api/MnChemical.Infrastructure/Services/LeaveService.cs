@@ -48,6 +48,8 @@ public class LeaveService(AppDbContext db) : ILeaveService
     {
         var leave = await db.LeaveRequests.Include(l => l.Employee).FirstOrDefaultAsync(l => l.Id == id);
         if (leave is null) return null;
+        if (leave.Status != LeaveStatus.Pending)
+            throw new InvalidOperationException($"Cannot review a leave request that is already {leave.Status}");
 
         leave.Status = dto.Status;
         leave.ApprovedBy = dto.ApprovedBy;
@@ -72,6 +74,6 @@ public class LeaveService(AppDbContext db) : ILeaveService
         l.Id, l.Type, l.StartDate, l.EndDate, l.Reason,
         l.Status, l.ApprovedBy, l.ReviewedAt, l.ReviewComment,
         l.EmployeeId, l.Employee.FullName, l.Employee.Department,
-        DayCount: l.EndDate.DayNumber - l.StartDate.DayNumber + 1,
+        DayCount: l.EndDate.ToDateTime(TimeOnly.MinValue).Subtract(l.StartDate.ToDateTime(TimeOnly.MinValue)).Days + 1,
         l.CreatedAt);
 }

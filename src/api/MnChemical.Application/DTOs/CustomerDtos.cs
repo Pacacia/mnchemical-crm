@@ -1,5 +1,7 @@
 namespace MnChemical.Application.DTOs;
 
+using System.ComponentModel.DataAnnotations;
+
 public record CustomerDto(
     Guid Id,
     string Name,
@@ -15,7 +17,7 @@ public record CustomerDto(
     int OrderCount);
 
 public record CreateCustomerDto(
-    string Name,
+    [Required, StringLength(200, MinimumLength = 1)] string Name,
     string? Country,
     string? City,
     string? Address,
@@ -23,10 +25,10 @@ public record CreateCustomerDto(
     string? RegistrationNumber,
     string? ContactPerson,
     string? Phone,
-    string? Email);
+    [EmailAddress] string? Email);
 
 public record UpdateCustomerDto(
-    string Name,
+    [Required, StringLength(200, MinimumLength = 1)] string Name,
     string? Country,
     string? City,
     string? Address,
@@ -34,4 +36,4 @@ public record UpdateCustomerDto(
     string? RegistrationNumber,
     string? ContactPerson,
     string? Phone,
-    string? Email);
+    [EmailAddress] string? Email);

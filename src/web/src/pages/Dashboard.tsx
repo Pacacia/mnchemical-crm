@@ -4,8 +4,8 @@ import { ordersApi } from '../api/orders';
 import { OrderStatusLabels } from '../types';
 
 export default function Dashboard() {
-  const { data: customers } = useQuery({ queryKey: ['customers'], queryFn: customersApi.getAll });
-  const { data: orders } = useQuery({ queryKey: ['orders'], queryFn: ordersApi.getAll });
+  const { data: customers, isError: custErr } = useQuery({ queryKey: ['customers'], queryFn: customersApi.getAll });
+  const { data: orders, isError: ordErr } = useQuery({ queryKey: ['orders'], queryFn: ordersApi.getAll });
 
   const activeOrders = orders?.filter(o => o.status < 5) ?? [];
   const totalRevenue = orders?.reduce((sum, o) => sum + o.totalAmountUsd, 0) ?? 0;
@@ -22,6 +22,7 @@ export default function Dashboard() {
       <h1 style={{ margin: '0 0 1.5rem', fontSize: '1.5rem' }}>Dashboard</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+        {(custErr || ordErr) && <div style={{ gridColumn: 'span 4', color: '#dc3545', fontSize: '0.85rem' }}>Failed to load some data. Check API connection.</div>}
         <StatCard label="Customers" value={customers?.length ?? 0} />
         <StatCard label="Active Orders" value={activeOrders.length} />
         <StatCard label="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} />

@@ -73,13 +73,7 @@ public class CustomerService(AppDbContext db) : ICustomerService
         customer.Email = dto.Email;
 
         await db.SaveChangesAsync();
-
-        var orderCount = await db.Orders.CountAsync(o => o.CustomerId == id);
-        return new CustomerDto(
-            customer.Id, customer.Name, customer.Country, customer.City, customer.Address,
-            customer.VatNumber, customer.RegistrationNumber,
-            customer.ContactPerson, customer.Phone, customer.Email,
-            customer.CreatedAt, orderCount);
+        return (await GetByIdAsync(id))!;
     }
 
     public async Task<bool> DeleteAsync(Guid id)

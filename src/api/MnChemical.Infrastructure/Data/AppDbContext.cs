@@ -50,6 +50,7 @@ public class AppDbContext : DbContext, IAppDbContext
             e.HasIndex(s => s.ContainerNumber);
             e.HasIndex(s => s.BatchNumber);
             e.HasOne(s => s.Order).WithMany(o => o.Shipments).HasForeignKey(s => s.OrderId);
+            e.HasIndex(s => s.OrderId);
             e.Property(s => s.NetWeightKg).HasPrecision(18, 2);
             e.Property(s => s.GrossWeightKg).HasPrecision(18, 2);
         });
@@ -57,6 +58,7 @@ public class AppDbContext : DbContext, IAppDbContext
         modelBuilder.Entity<TransportRecord>(e =>
         {
             e.HasOne(t => t.Shipment).WithMany(s => s.TransportRecords).HasForeignKey(t => t.ShipmentId);
+            e.HasIndex(t => t.ShipmentId);
             e.Property(t => t.CostUsd).HasPrecision(18, 2);
             e.Property(t => t.CostGel).HasPrecision(18, 2);
             e.Property(t => t.ExchangeRate).HasPrecision(18, 4);
@@ -82,12 +84,14 @@ public class AppDbContext : DbContext, IAppDbContext
         {
             e.HasOne(c => c.Shipment).WithMany(s => s.MaterialConsumptions).HasForeignKey(c => c.ShipmentId);
             e.HasOne(c => c.MaterialLot).WithMany(l => l.Consumptions).HasForeignKey(c => c.MaterialLotId);
+            e.HasIndex(c => c.ShipmentId);
             e.Property(c => c.Quantity).HasPrecision(18, 2);
         });
 
         modelBuilder.Entity<Payment>(e =>
         {
             e.HasOne(p => p.Order).WithMany(o => o.Payments).HasForeignKey(p => p.OrderId);
+            e.HasIndex(p => p.OrderId);
             e.Property(p => p.AmountUsd).HasPrecision(18, 2);
         });
 

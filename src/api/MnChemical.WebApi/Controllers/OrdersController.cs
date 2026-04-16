@@ -39,8 +39,12 @@ public class OrdersController(IOrderService orderService) : ControllerBase
     [HttpPatch("{id:guid}/status")]
     public async Task<ActionResult<OrderDto>> UpdateStatus(Guid id, UpdateOrderStatusDto dto)
     {
-        var order = await orderService.UpdateStatusAsync(id, dto.Status);
-        return order is null ? NotFound() : Ok(order);
+        try
+        {
+            var order = await orderService.UpdateStatusAsync(id, dto.Status);
+            return order is null ? NotFound() : Ok(order);
+        }
+        catch (InvalidOperationException ex) { return BadRequest(new { error = ex.Message }); }
     }
 
     [HttpDelete("{id:guid}")]

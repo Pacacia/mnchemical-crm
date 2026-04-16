@@ -89,10 +89,24 @@ public class OrderService(AppDbContext db) : IOrderService
         return await GetByIdAsync(id);
     }
 
+    private static readonly Dictionary<OrderStatus, OrderStatus[]> ValidTransitions = new()
+    {
+        [OrderStatus.New] = [OrderStatus.Confirmed, OrderStatus.Cancelled],
+        [OrderStatus.Confirmed] = [OrderStatus.InProduction, OrderStatus.Cancelled],
+        [OrderStatus.InProduction] = [OrderStatus.Shipped, OrderStatus.Cancelled],
+        [OrderStatus.Shipped] = [OrderStatus.Delivered],
+        [OrderStatus.Delivered] = [OrderStatus.Paid],
+        [OrderStatus.Paid] = [],
+        [OrderStatus.Cancelled] = [],
+    };
+
     public async Task<OrderDto?> UpdateStatusAsync(Guid id, OrderStatus status)
     {
         var order = await db.Orders.FindAsync(id);
         if (order is null) return null;
+
+        if (!ValidTransitions.TryGetValue(order.Status, out var allowed) || !allowed.Contains(status))
+            throw new InvalidOperationException($"Cannot transition from {order.Status} to {status}");
 
         order.Status = status;
         await db.SaveChangesAsync();

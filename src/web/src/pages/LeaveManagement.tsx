@@ -127,9 +127,9 @@ export default function LeaveManagement() {
                   <td style={tdStyle}>
                     {l.status === LeaveStatus.Pending && (
                       <div style={{ display: 'flex', gap: 6 }}>
-                        <button onClick={() => reviewMutation.mutate({ id: l.id, status: LeaveStatus.Approved })}
+                        <button onClick={() => { if (confirm(`Approve leave for ${l.employeeName}?`)) reviewMutation.mutate({ id: l.id, status: LeaveStatus.Approved }); }}
                           style={{ background: 'none', border: 'none', color: '#198754', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Approve</button>
-                        <button onClick={() => reviewMutation.mutate({ id: l.id, status: LeaveStatus.Rejected })}
+                        <button onClick={() => { if (confirm(`Reject leave for ${l.employeeName}?`)) reviewMutation.mutate({ id: l.id, status: LeaveStatus.Rejected }); }}
                           style={{ background: 'none', border: 'none', color: '#dc3545', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Reject</button>
                       </div>
                     )}

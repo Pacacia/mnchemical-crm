@@ -1,5 +1,6 @@
 namespace MnChemical.Application.DTOs;
 
+using System.ComponentModel.DataAnnotations;
 using MnChemical.Domain.Entities;
 
 public record OrderDto(
@@ -28,30 +29,30 @@ public record OrderLineDto(
     string? PackagingType);
 
 public record CreateOrderDto(
-    string InvoiceNumber,
+    [Required, StringLength(50)] string InvoiceNumber,
     DateTime OrderDate,
     DateTime? DeliveryDate,
-    string Destination,
+    [Required, StringLength(200)] string Destination,
     string? Incoterms,
     string? PaymentTerms,
     Guid CustomerId,
-    List<CreateOrderLineDto> Lines);
+    [Required, MinLength(1)] List<CreateOrderLineDto> Lines);
 
 public record CreateOrderLineDto(
-    string ProductDescription,
+    [Required] string ProductDescription,
     ProductType ProductType,
-    decimal QuantityTons,
-    decimal UnitPriceUsd,
+    [Range(0.001, 100000)] decimal QuantityTons,
+    [Range(0.01, 1000000)] decimal UnitPriceUsd,
     string? PackagingType);
 
 public record UpdateOrderDto(
-    string InvoiceNumber,
+    [Required, StringLength(50)] string InvoiceNumber,
     DateTime OrderDate,
     DateTime? DeliveryDate,
-    string Destination,
+    [Required, StringLength(200)] string Destination,
     string? Incoterms,
     string? PaymentTerms,
     Guid CustomerId,
-    List<CreateOrderLineDto> Lines);
+    [Required, MinLength(1)] List<CreateOrderLineDto> Lines);
 
 public record UpdateOrderStatusDto(OrderStatus Status);

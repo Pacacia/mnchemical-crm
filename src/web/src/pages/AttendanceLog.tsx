@@ -3,13 +3,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { attendanceApi } from '../api/attendance';
 import { employeesApi } from '../api/employees';
 
-const today = new Date().toISOString().split('T')[0];
-const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function getWeekAgo() { return new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]; }
 
 export default function AttendanceLog() {
   const queryClient = useQueryClient();
-  const [from, setFrom] = useState(weekAgo);
-  const [to, setTo] = useState(today);
+  const [from, setFrom] = useState(getWeekAgo);
+  const [to, setTo] = useState(getToday);
   const [employeeFilter, setEmployeeFilter] = useState('');
   const [overrideId, setOverrideId] = useState<string | null>(null);
   const [overrideForm, setOverrideForm] = useState({ clockIn: '', clockOut: '', managerComment: '' });

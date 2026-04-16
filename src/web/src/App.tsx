@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getToken, getStoredUser, clearToken } from './api/auth';
@@ -32,19 +32,16 @@ export default function App() {
   const [user, setUser] = useState<AuthUser | null>(getToken() ? getStoredUser() : null);
   const [checking, setChecking] = useState(!user);
 
-  // Check if auth is bypassed (dev mode) by testing an endpoint without a token
-  useState(() => {
-    if (user) return;
-    fetch('/api/health').then(r => {
-      if (r.ok) {
-        // Try a protected endpoint without token
-        fetch('/api/customers').then(r2 => {
-          if (r2.ok) { setUser(DEV_USER); } // Auth bypassed
-          setChecking(false);
-        });
-      } else { setChecking(false); }
-    }).catch(() => setChecking(false));
-  });
+  useEffect(() => {
+    if (user) { setChecking(false); return; }
+    let cancelled = false;
+    fetch('/api/customers').then(r => {
+      if (cancelled) return;
+      if (r.ok) { setUser(DEV_USER); }
+      setChecking(false);
+    }).catch(() => { if (!cancelled) setChecking(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleLogin = () => setUser(getStoredUser());
   const handleLogout = () => { clearToken(); setUser(null); queryClient.clear(); };

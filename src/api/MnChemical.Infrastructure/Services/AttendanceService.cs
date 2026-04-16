@@ -102,9 +102,8 @@ public class AttendanceService(AppDbContext db) : IAttendanceService
         int imported = 0, duplicatesSkipped = 0, employeesCreated = 0;
 
         var existingEmployees = await db.Employees.ToDictionaryAsync(e => e.BadgeId, e => e);
-        var existingRecords = new HashSet<(Guid, DateOnly)>(
-            await db.AttendanceRecords.Select(a => new { a.EmployeeId, a.Date }).ToListAsync()
-                .ContinueWith(t => t.Result.Select(a => (a.EmployeeId, a.Date))));
+        var existingRecordsList = await db.AttendanceRecords.Select(a => new { a.EmployeeId, a.Date }).ToListAsync();
+        var existingRecords = new HashSet<(Guid, DateOnly)>(existingRecordsList.Select(a => (a.EmployeeId, a.Date)));
 
         string? line;
         int lineNum = 1;
