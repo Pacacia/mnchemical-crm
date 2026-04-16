@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MnChemical.Application/MnChemical.Application.csproj" />
+  <Project Path="MnChemical.Domain/MnChemical.Domain.csproj" />
+  <Project Path="MnChemical.Infrastructure/MnChemical.Infrastructure.csproj" />
+  <Project Path="MnChemical.WebApi/MnChemical.WebApi.csproj" />
+</Solution>
