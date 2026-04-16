@@ -16,6 +16,7 @@ public interface IAppDbContext
     DbSet<Payment> Payments { get; }
     DbSet<Employee> Employees { get; }
     DbSet<AttendanceRecord> AttendanceRecords { get; }
+    DbSet<LeaveRequest> LeaveRequests { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

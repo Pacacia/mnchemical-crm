@@ -19,6 +19,7 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
+    public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,6 +99,13 @@ public class AppDbContext : DbContext, IAppDbContext
         {
             e.HasOne(a => a.Employee).WithMany(emp => emp.AttendanceRecords).HasForeignKey(a => a.EmployeeId);
             e.HasIndex(a => new { a.EmployeeId, a.Date });
+            e.HasIndex(a => a.Date);
+        });
+
+        modelBuilder.Entity<LeaveRequest>(e =>
+        {
+            e.HasOne(l => l.Employee).WithMany(emp => emp.LeaveRequests).HasForeignKey(l => l.EmployeeId);
+            e.HasIndex(l => new { l.EmployeeId, l.StartDate });
         });
     }
 

@@ -6,6 +6,12 @@ import CustomerList from './pages/CustomerList';
 import CustomerForm from './pages/CustomerForm';
 import OrderList from './pages/OrderList';
 import OrderForm from './pages/OrderForm';
+import EmployeeList from './pages/EmployeeList';
+import EmployeeForm from './pages/EmployeeForm';
+import AttendanceToday from './pages/AttendanceToday';
+import AttendanceLog from './pages/AttendanceLog';
+import MonthlyReport from './pages/MonthlyReport';
+import LeaveManagement from './pages/LeaveManagement';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -24,6 +30,13 @@ export default function App() {
             <Route path="/orders" element={<OrderList />} />
             <Route path="/orders/new" element={<OrderForm />} />
             <Route path="/orders/:id/edit" element={<OrderForm />} />
+            <Route path="/employees" element={<EmployeeList />} />
+            <Route path="/employees/new" element={<EmployeeForm />} />
+            <Route path="/employees/:id/edit" element={<EmployeeForm />} />
+            <Route path="/attendance" element={<AttendanceToday />} />
+            <Route path="/attendance/log" element={<AttendanceLog />} />
+            <Route path="/attendance/report" element={<MonthlyReport />} />
+            <Route path="/leave" element={<LeaveManagement />} />
           </Route>
         </Routes>
       </BrowserRouter>

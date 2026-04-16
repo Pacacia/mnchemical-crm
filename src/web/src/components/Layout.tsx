@@ -1,9 +1,24 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
-const navItems = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/customers', label: 'Customers' },
-  { to: '/orders', label: 'Orders' },
+const navSections = [
+  {
+    title: 'Sales',
+    items: [
+      { to: '/', label: 'Dashboard' },
+      { to: '/customers', label: 'Customers' },
+      { to: '/orders', label: 'Orders' },
+    ],
+  },
+  {
+    title: 'HR',
+    items: [
+      { to: '/employees', label: 'Employees' },
+      { to: '/attendance', label: 'Today' },
+      { to: '/attendance/log', label: 'Attendance Log' },
+      { to: '/attendance/report', label: 'Monthly Report' },
+      { to: '/leave', label: 'Leave Requests' },
+    ],
+  },
 ];
 
 export default function Layout() {
@@ -21,24 +36,31 @@ export default function Layout() {
           <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>MN Chemical</h2>
           <span style={{ fontSize: '0.75rem', color: '#888' }}>CRM System</span>
         </div>
-        <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {navItems.map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              style={({ isActive }) => ({
-                display: 'block',
-                padding: '0.6rem 1.25rem',
-                color: isActive ? '#fff' : '#aaa',
-                background: isActive ? '#16213e' : 'transparent',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                borderLeft: isActive ? '3px solid #4361ee' : '3px solid transparent',
-              })}
-            >
-              {item.label}
-            </NavLink>
+        <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column' }}>
+          {navSections.map(section => (
+            <div key={section.title}>
+              <div style={{ padding: '0.75rem 1.25rem 0.25rem', fontSize: '0.7rem', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {section.title}
+              </div>
+              {section.items.map(item => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/'}
+                  style={({ isActive }) => ({
+                    display: 'block',
+                    padding: '0.5rem 1.25rem',
+                    color: isActive ? '#fff' : '#aaa',
+                    background: isActive ? '#16213e' : 'transparent',
+                    textDecoration: 'none',
+                    fontSize: '0.85rem',
+                    borderLeft: isActive ? '3px solid #4361ee' : '3px solid transparent',
+                  })}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </div>
       </nav>

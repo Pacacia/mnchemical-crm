@@ -95,3 +95,129 @@ export interface CreateOrder {
     packagingType?: string;
   }[];
 }
+
+// HR types
+
+export const WorkSchedule = {
+  Day9to18: 0,
+  Day9to21: 1,
+  Night21to9: 2,
+} as const;
+export type WorkSchedule = (typeof WorkSchedule)[keyof typeof WorkSchedule];
+
+export const WorkScheduleLabels: Record<WorkSchedule, string> = {
+  [WorkSchedule.Day9to18]: '09:00 - 18:00',
+  [WorkSchedule.Day9to21]: '09:00 - 21:00',
+  [WorkSchedule.Night21to9]: '21:00 - 09:00',
+};
+
+export interface Employee {
+  id: string;
+  badgeId: string;
+  fullName: string;
+  department: string | null;
+  position: string | null;
+  shift: string | null;
+  schedule: WorkSchedule;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface CreateEmployee {
+  badgeId: string;
+  fullName: string;
+  department?: string;
+  position?: string;
+  shift?: string;
+  schedule: WorkSchedule;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  date: string;
+  clockIn: string | null;
+  clockOut: string | null;
+  workTime: string | null;
+  overtime: string | null;
+  nightHours: string | null;
+  isLateArrival: boolean;
+  isAbsent: boolean;
+  isMissingClockOut: boolean;
+  isManualOverride: boolean;
+  managerComment: string | null;
+  employeeId: string;
+  employeeName: string;
+  department: string | null;
+}
+
+export interface TodayAttendanceSummary {
+  totalEmployees: number;
+  presentCount: number;
+  lateCount: number;
+  absentCount: number;
+  missingClockOutCount: number;
+  records: AttendanceRecord[];
+}
+
+export interface MonthlyEmployeeSummary {
+  employeeId: string;
+  employeeName: string;
+  department: string | null;
+  daysWorked: number;
+  lateCount: number;
+  absentCount: number;
+  totalWorkTime: string;
+  totalOvertime: string;
+  totalNightHours: string;
+  missingClockOutCount: number;
+}
+
+export interface CsvImportResult {
+  recordsImported: number;
+  employeesCreated: number;
+  duplicatesSkipped: number;
+  warnings: string[];
+}
+
+export const LeaveType = {
+  Vacation: 0,
+  Sick: 1,
+  Personal: 2,
+} as const;
+export type LeaveType = (typeof LeaveType)[keyof typeof LeaveType];
+
+export const LeaveTypeLabels: Record<LeaveType, string> = {
+  [LeaveType.Vacation]: 'Vacation',
+  [LeaveType.Sick]: 'Sick',
+  [LeaveType.Personal]: 'Personal',
+};
+
+export const LeaveStatus = {
+  Pending: 0,
+  Approved: 1,
+  Rejected: 2,
+} as const;
+export type LeaveStatus = (typeof LeaveStatus)[keyof typeof LeaveStatus];
+
+export const LeaveStatusLabels: Record<LeaveStatus, string> = {
+  [LeaveStatus.Pending]: 'Pending',
+  [LeaveStatus.Approved]: 'Approved',
+  [LeaveStatus.Rejected]: 'Rejected',
+};
+
+export interface LeaveRequest {
+  id: string;
+  type: LeaveType;
+  startDate: string;
+  endDate: string;
+  reason: string | null;
+  status: LeaveStatus;
+  approvedBy: string | null;
+  reviewedAt: string | null;
+  reviewComment: string | null;
+  employeeId: string;
+  employeeName: string;
+  department: string | null;
+  dayCount: number;
+  createdAt: string;
+}
