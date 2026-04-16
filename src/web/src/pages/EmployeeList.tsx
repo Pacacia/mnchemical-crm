@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { employeesApi } from '../api/employees';
@@ -6,6 +6,7 @@ import { WorkScheduleLabels } from '../types';
 
 export default function EmployeeList() {
   const [showInactive, setShowInactive] = useState(false);
+  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const { data: employees, isLoading } = useQuery({
     queryKey: ['employees', showInactive],
@@ -17,11 +18,18 @@ export default function EmployeeList() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] }),
   });
 
+  const filtered = useMemo(() => {
+    if (!employees) return [];
+    if (!search) return employees;
+    const q = search.toLowerCase();
+    return employees.filter(e => e.fullName.toLowerCase().includes(q) || e.badgeId.includes(q) || (e.department ?? '').toLowerCase().includes(q) || (e.position ?? '').toLowerCase().includes(q));
+  }, [employees, search]);
+
   if (isLoading) return <p>Loading...</p>;
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Employees</h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <label style={{ fontSize: '0.85rem', color: '#666' }}>
@@ -30,6 +38,13 @@ export default function EmployeeList() {
           </label>
           <Link to="/employees/new" style={btnStyle}>+ New Employee</Link>
         </div>
+      </div>
+      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'center' }}>
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <input placeholder="Search name, badge, department, position..." value={search} onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.9rem', boxSizing: 'border-box' as const }} />
+        </div>
+        <span style={{ fontSize: '0.8rem', color: '#888' }}>{filtered.length} employees</span>
       </div>
 
       <div style={{ background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
@@ -46,10 +61,10 @@ export default function EmployeeList() {
             </tr>
           </thead>
           <tbody>
-            {employees?.length === 0 && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>No employees yet. Import from CSV or add manually.</td></tr>
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>{employees?.length ? 'No matching employees.' : 'No employees yet.'}</td></tr>
             )}
-            {employees?.map(e => (
+            {filtered.map(e => (
               <tr key={e.id} style={{ borderBottom: '1px solid #f0f0f0', opacity: e.isActive ? 1 : 0.5 }}>
                 <td style={tdStyle}>{e.badgeId}</td>
                 <td style={tdStyle} >{e.fullName}</td>

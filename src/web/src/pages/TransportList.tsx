@@ -9,6 +9,7 @@ export default function TransportList() {
   const { data: records, isLoading } = useQuery({ queryKey: ['transport'], queryFn: transportApi.getAll });
   const { data: shipments } = useQuery({ queryKey: ['shipments'], queryFn: shipmentsApi.getAll });
   const { data: unmatched } = useQuery({ queryKey: ['unmatched-shipments'], queryFn: transportApi.getUnmatchedShipments });
+  const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<CreateTransportRecord>({
     carrierInvoiceNumber: '', invoiceDate: new Date().toISOString().split('T')[0],
@@ -101,6 +102,14 @@ export default function TransportList() {
         </form>
       )}
 
+      {(() => {
+        let list = records ?? [];
+        if (search) { const q = search.toLowerCase(); list = list.filter(r => r.carrierInvoiceNumber.toLowerCase().includes(q) || r.carrierName.toLowerCase().includes(q) || (r.containerNumber ?? '').toLowerCase().includes(q) || r.routeLeg.toLowerCase().includes(q)); }
+        return <>
+      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'center' }}>
+        <div style={{ flex: 1, minWidth: 200 }}><input placeholder="Search invoice, carrier, container, route..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.9rem', boxSizing: 'border-box' as const }} /></div>
+        <span style={{ fontSize: '0.8rem', color: '#888' }}>{list.length} records</span>
+      </div>
       <div style={{ background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
           <thead>
@@ -118,10 +127,10 @@ export default function TransportList() {
             </tr>
           </thead>
           <tbody>
-            {records?.length === 0 && (
-              <tr><td colSpan={10} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>No transport invoices yet.</td></tr>
+            {list.length === 0 && (
+              <tr><td colSpan={10} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>{records?.length ? 'No matching records.' : 'No transport invoices yet.'}</td></tr>
             )}
-            {records?.map(r => (
+            {list.map(r => (
               <tr key={r.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                 <td style={tdStyle}>{r.carrierInvoiceNumber}</td>
                 <td style={tdStyle}>{new Date(r.invoiceDate).toLocaleDateString()}</td>
@@ -141,6 +150,8 @@ export default function TransportList() {
           </tbody>
         </table>
       </div>
+      </>;
+      })()}
     </div>
   );
 }

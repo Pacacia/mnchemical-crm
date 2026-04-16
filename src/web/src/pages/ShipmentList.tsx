@@ -8,6 +8,8 @@ export default function ShipmentList() {
   const queryClient = useQueryClient();
   const { data: shipments, isLoading } = useQuery({ queryKey: ['shipments'], queryFn: shipmentsApi.getAll });
   const { data: orders } = useQuery({ queryKey: ['orders'], queryFn: ordersApi.getAll });
+  const [search, setSearch] = useState('');
+  const [transportFilter, setTransportFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<CreateShipment>({
     batchNumber: '', containerNumber: '', netWeightKg: 0, grossWeightKg: 0,
@@ -87,6 +89,20 @@ export default function ShipmentList() {
         </form>
       )}
 
+      {(() => {
+        let list = shipments ?? [];
+        if (search) { const q = search.toLowerCase(); list = list.filter(s => s.containerNumber.toLowerCase().includes(q) || s.batchNumber.toLowerCase().includes(q) || s.customerName.toLowerCase().includes(q) || s.destination.toLowerCase().includes(q)); }
+        if (transportFilter === 'yes') list = list.filter(s => s.hasTransportInvoice);
+        if (transportFilter === 'no') list = list.filter(s => !s.hasTransportInvoice);
+        return <>
+      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'end', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 200 }}><input placeholder="Search container, batch, customer, destination..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.9rem', boxSizing: 'border-box' as const }} /></div>
+        <div><label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, color: '#888', marginBottom: 2 }}>Transport</label>
+          <select value={transportFilter} onChange={e => setTransportFilter(e.target.value)} style={{ padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem' }}>
+            <option value="">All</option><option value="yes">Has invoice</option><option value="no">No invoice</option>
+          </select></div>
+        <span style={{ fontSize: '0.8rem', color: '#888' }}>{list.length} shipments</span>
+      </div>
       <div style={{ background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
           <thead>
@@ -103,10 +119,10 @@ export default function ShipmentList() {
             </tr>
           </thead>
           <tbody>
-            {shipments?.length === 0 && (
-              <tr><td colSpan={9} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>No shipments yet.</td></tr>
+            {list.length === 0 && (
+              <tr><td colSpan={9} style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>{shipments?.length ? 'No matching shipments.' : 'No shipments yet.'}</td></tr>
             )}
-            {shipments?.map(s => (
+            {list.map(s => (
               <tr key={s.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                 <td style={tdStyle}>{s.containerNumber}</td>
                 <td style={tdStyle}>{s.batchNumber}</td>
@@ -129,6 +145,8 @@ export default function ShipmentList() {
           </tbody>
         </table>
       </div>
+      </>;
+      })()}
     </div>
   );
 }
