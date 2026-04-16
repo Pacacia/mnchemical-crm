@@ -20,6 +20,7 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -106,6 +107,11 @@ public class AppDbContext : DbContext, IAppDbContext
         {
             e.HasOne(l => l.Employee).WithMany(emp => emp.LeaveRequests).HasForeignKey(l => l.EmployeeId);
             e.HasIndex(l => new { l.EmployeeId, l.StartDate });
+        });
+
+        modelBuilder.Entity<User>(e =>
+        {
+            e.HasIndex(u => u.Username).IsUnique();
         });
     }
 

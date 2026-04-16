@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import type { AuthUser } from '../api/auth';
 
 const navSections = [
   {
@@ -24,6 +25,12 @@ const navSections = [
     ],
   },
   {
+    title: 'Accounting',
+    items: [
+      { to: '/accounting', label: 'Finance' },
+    ],
+  },
+  {
     title: 'HR',
     items: [
       { to: '/employees', label: 'Employees' },
@@ -35,7 +42,7 @@ const navSections = [
   },
 ];
 
-export default function Layout() {
+export default function Layout({ user, onLogout }: { user: AuthUser; onLogout: () => void }) {
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <nav style={{
@@ -76,6 +83,14 @@ export default function Layout() {
               ))}
             </div>
           ))}
+        </div>
+        <div style={{ marginTop: 'auto', padding: '1rem 1.25rem', borderTop: '1px solid #333' }}>
+          <div style={{ fontSize: '0.8rem', color: '#aaa', marginBottom: 4 }}>{user.fullName}</div>
+          <div style={{ fontSize: '0.7rem', color: '#666', marginBottom: 8 }}>{user.role}</div>
+          <button onClick={onLogout} style={{
+            background: 'none', border: '1px solid #444', color: '#aaa', padding: '0.3rem 0.75rem',
+            borderRadius: 4, cursor: 'pointer', fontSize: '0.75rem', width: '100%',
+          }}>Sign Out</button>
         </div>
       </nav>
 

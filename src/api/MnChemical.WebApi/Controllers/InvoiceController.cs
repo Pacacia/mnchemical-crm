@@ -3,6 +3,9 @@ namespace MnChemical.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MnChemical.Application.Services;
 
+using Microsoft.AspNetCore.Authorization;
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class InvoiceController(IInvoiceService invoiceService) : ControllerBase

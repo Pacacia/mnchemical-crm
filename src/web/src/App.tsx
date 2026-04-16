@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { getToken, getStoredUser, clearToken } from './api/auth';
+import type { AuthUser } from './api/auth';
 import Layout from './components/Layout';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CustomerList from './pages/CustomerList';
 import CustomerForm from './pages/CustomerForm';
@@ -16,17 +20,25 @@ import ShipmentList from './pages/ShipmentList';
 import TransportList from './pages/TransportList';
 import WarehouseInventory from './pages/WarehouseInventory';
 import MaterialConsumption from './pages/MaterialConsumption';
+import Accounting from './pages/Accounting';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
 
 export default function App() {
+  const [user, setUser] = useState<AuthUser | null>(getToken() ? getStoredUser() : null);
+
+  const handleLogin = () => setUser(getStoredUser());
+  const handleLogout = () => { clearToken(); setUser(null); queryClient.clear(); };
+
+  if (!user) return <Login onLogin={handleLogin} />;
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route element={<Layout />}>
+          <Route element={<Layout user={user} onLogout={handleLogout} />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/customers" element={<CustomerList />} />
             <Route path="/customers/new" element={<CustomerForm />} />
@@ -38,6 +50,7 @@ export default function App() {
             <Route path="/transport" element={<TransportList />} />
             <Route path="/warehouse" element={<WarehouseInventory />} />
             <Route path="/warehouse/consumption" element={<MaterialConsumption />} />
+            <Route path="/accounting" element={<Accounting />} />
             <Route path="/employees" element={<EmployeeList />} />
             <Route path="/employees/new" element={<EmployeeForm />} />
             <Route path="/employees/:id/edit" element={<EmployeeForm />} />

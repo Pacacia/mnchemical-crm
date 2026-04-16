@@ -5,6 +5,9 @@ using MnChemical.Application.DTOs;
 using MnChemical.Application.Services;
 using MnChemical.Domain.Entities;
 
+using Microsoft.AspNetCore.Authorization;
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LeaveController(ILeaveService leaveService) : ControllerBase

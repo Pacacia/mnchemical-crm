@@ -1,4 +1,5 @@
 import { api } from './client';
+import { getToken } from './auth';
 import type { AttendanceRecord, TodayAttendanceSummary, MonthlyEmployeeSummary, CsvImportResult } from '../types';
 
 export const attendanceApi = {
@@ -15,7 +16,10 @@ export const attendanceApi = {
   importCsv: async (file: File): Promise<CsvImportResult> => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch('/api/attendance/import', { method: 'POST', body: formData });
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch('/api/attendance/import', { method: 'POST', body: formData, headers });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     return res.json();
   },

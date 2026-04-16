@@ -1,3 +1,5 @@
+import { getToken } from './auth';
+
 export const invoicesApi = {
   downloadInvoice: (orderId: string) =>
     downloadPdf(`/api/invoice/${orderId}/invoice`, `invoice-${orderId}.pdf`),
@@ -6,7 +8,10 @@ export const invoicesApi = {
 };
 
 async function downloadPdf(url: string, filename: string) {
-  const res = await fetch(url);
+  const token = getToken();
+  const headers: Record<string, string> = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(url, { headers });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   const blob = await res.blob();
   const a = document.createElement('a');

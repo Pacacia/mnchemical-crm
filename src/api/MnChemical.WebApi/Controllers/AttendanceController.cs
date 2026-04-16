@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using MnChemical.Application.DTOs;
 using MnChemical.Application.Services;
 
+using Microsoft.AspNetCore.Authorization;
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AttendanceController(IAttendanceService attendanceService) : ControllerBase
