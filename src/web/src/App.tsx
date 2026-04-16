@@ -12,6 +12,8 @@ import AttendanceToday from './pages/AttendanceToday';
 import AttendanceLog from './pages/AttendanceLog';
 import MonthlyReport from './pages/MonthlyReport';
 import LeaveManagement from './pages/LeaveManagement';
+import ShipmentList from './pages/ShipmentList';
+import TransportList from './pages/TransportList';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -30,6 +32,8 @@ export default function App() {
             <Route path="/orders" element={<OrderList />} />
             <Route path="/orders/new" element={<OrderForm />} />
             <Route path="/orders/:id/edit" element={<OrderForm />} />
+            <Route path="/shipments" element={<ShipmentList />} />
+            <Route path="/transport" element={<TransportList />} />
             <Route path="/employees" element={<EmployeeList />} />
             <Route path="/employees/new" element={<EmployeeForm />} />
             <Route path="/employees/:id/edit" element={<EmployeeForm />} />

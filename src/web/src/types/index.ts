@@ -221,3 +221,67 @@ export interface LeaveRequest {
   dayCount: number;
   createdAt: string;
 }
+
+// Shipment & Transport types
+
+export interface Shipment {
+  id: string;
+  batchNumber: string;
+  containerNumber: string;
+  netWeightKg: number;
+  grossWeightKg: number;
+  bigBagCount: number;
+  smallBagCount: number;
+  palletCount: number;
+  shipmentDate: string | null;
+  departureDate: string | null;
+  orderId: string;
+  orderInvoiceNumber: string;
+  customerName: string;
+  destination: string;
+  hasTransportInvoice: boolean;
+  totalTransportCostUsd: number;
+}
+
+export interface CreateShipment {
+  batchNumber: string;
+  containerNumber: string;
+  netWeightKg: number;
+  grossWeightKg: number;
+  bigBagCount: number;
+  smallBagCount: number;
+  palletCount: number;
+  shipmentDate?: string;
+  departureDate?: string;
+  orderId: string;
+}
+
+export interface TransportRecord {
+  id: string;
+  carrierInvoiceNumber: string;
+  invoiceDate: string;
+  carrierName: string;
+  routeLeg: string;
+  costUsd: number;
+  costGel: number;
+  exchangeRate: number;
+  vatRate: number;
+  vatAmountUsd: number;
+  totalWithVatUsd: number;
+  shipmentId: string;
+  containerNumber: string | null;
+  orderInvoiceNumber: string | null;
+  createdAt: string;
+}
+
+export interface CreateTransportRecord {
+  carrierInvoiceNumber: string;
+  invoiceDate: string;
+  carrierName: string;
+  routeLeg: string;
+  costUsd: number;
+  costGel: number;
+  exchangeRate: number;
+  vatRate: number;
+  shipmentId: string;
+}

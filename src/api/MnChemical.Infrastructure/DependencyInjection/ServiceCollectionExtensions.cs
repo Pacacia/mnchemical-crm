@@ -7,6 +7,7 @@ using MnChemical.Application.Interfaces;
 using MnChemical.Application.Services;
 using MnChemical.Infrastructure.Data;
 using MnChemical.Infrastructure.Services;
+using QuestPDF.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {
@@ -22,6 +23,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddScoped<ILeaveService, LeaveService>();
+        services.AddScoped<IInvoiceService, InvoiceService>();
+        services.AddScoped<IShipmentService, ShipmentService>();
+        services.AddScoped<ITransportService, TransportService>();
+
+        QuestPDF.Settings.License = LicenseType.Community;
 
         return services;
     }

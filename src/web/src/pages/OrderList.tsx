@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ordersApi } from '../api/orders';
+import { invoicesApi } from '../api/invoices';
 import { OrderStatus, OrderStatusLabels } from '../types';
 
 const statusColors: Record<OrderStatus, string> = {
@@ -83,11 +84,17 @@ export default function OrderList() {
                   </select>
                 </td>
                 <td style={tdStyle}>
-                  <Link to={`/orders/${o.id}/edit`} style={{ color: '#4361ee', marginRight: 12, textDecoration: 'none', fontSize: '0.85rem' }}>Edit</Link>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <Link to={`/orders/${o.id}/edit`} style={{ color: '#4361ee', textDecoration: 'none', fontSize: '0.85rem' }}>Edit</Link>
+                  <button onClick={() => invoicesApi.downloadInvoice(o.id)}
+                    style={{ background: 'none', border: 'none', color: '#198754', cursor: 'pointer', fontSize: '0.85rem' }}>Invoice</button>
+                  <button onClick={() => invoicesApi.downloadPackingList(o.id)}
+                    style={{ background: 'none', border: 'none', color: '#6f42c1', cursor: 'pointer', fontSize: '0.85rem' }}>Packing</button>
                   <button
                     onClick={() => { if (confirm(`Delete order "${o.invoiceNumber}"?`)) deleteMutation.mutate(o.id); }}
                     style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.85rem' }}
                   >Delete</button>
+                  </div>
                 </td>
               </tr>
             ))}

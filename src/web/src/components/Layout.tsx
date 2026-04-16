@@ -10,6 +10,13 @@ const navSections = [
     ],
   },
   {
+    title: 'Logistics',
+    items: [
+      { to: '/shipments', label: 'Shipments' },
+      { to: '/transport', label: 'Transport Costs' },
+    ],
+  },
+  {
     title: 'HR',
     items: [
       { to: '/employees', label: 'Employees' },
